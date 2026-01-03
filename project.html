@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steel Hours Planner</title>
+    <style>
+        :root {
+            --color-primary: var(--color-teal-500, #208090);
+            --color-primary-hover: var(--color-teal-600, #1d7480);
+            --color-bg: var(--color-cream-50, #fcfcf9);
+            --color-surface: var(--color-cream-100, #fffffd);
+            --color-text: var(--color-slate-900, #134252);
+            --color-text-secondary: var(--color-slate-500, #626c71);
+            --color-border: rgba(94, 82, 64, 0.2);
+            --color-success: #22c55e;
+            --color-warning: #f97316;
+            --color-error: #c01530;
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: var(--space-20);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: var(--space-24);
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: var(--space-16);
+        }
+
+        h1 {
+            margin: 0 0 var(--space-8) 0;
+            font-size: 28px;
+            color: var(--color-primary);
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: var(--space-20);
+            margin-bottom: var(--space-20);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        h2 {
+            margin: 0 0 var(--space-16) 0;
+            font-size: 18px;
+            color: var(--color-primary);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-16);
+        }
+
+        label {
+            display: block;
+            margin-bottom: var(--space-8);
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        input, select {
+            width: 100%;
+            padding: var(--space-8) var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--color-text);
+            background: var(--color-surface);
+            font-family: inherit;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(32, 128, 144, 0.1);
+        }
+
+        .btn {
+            padding: var(--space-8) var(--space-16);
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 150ms ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .btn--primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn--primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn--secondary {
+            background: rgba(32, 128, 144, 0.1);
+            color: var(--color-primary);
+        }
+
+        .btn--secondary:hover {
+            background: rgba(32, 128, 144, 0.2);
+        }
+
+        .btn--danger {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .btn--danger:hover {
+            background: #a01228;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-16);
+        }
+
+        .card {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: var(--space-16);
+        }
+
+        .card-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-4);
+        }
+
+        .card-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-16);
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: var(--space-12);
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            background: rgba(32, 128, 144, 0.05);
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        tr:hover {
+            background: rgba(32, 128, 144, 0.02);
+        }
+
+        .status {
+            display: inline-block;
+            padding: var(--space-4) var(--space-8);
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .status--normal {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--color-success);
+        }
+
+        .status--ot {
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--color-warning);
+        }
+
+        .status--critical {
+            background: rgba(192, 21, 47, 0.1);
+            color: var(--color-error);
+        }
+
+        .flex {
+            display: flex;
+            gap: var(--space-16);
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .flex-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .row-group {
+            background: rgba(32, 128, 144, 0.02);
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-24);
+            color: var(--color-text-secondary);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: var(--space-12);
+            opacity: 0.5;
+        }
+
+        .add-row-btn {
+            margin-top: var(--space-16);
+        }
+
+        .remove-btn {
+            padding: var(--space-4) var(--space-8);
+            font-size: 12px;
+            background: rgba(192, 21, 47, 0.1);
+            color: var(--color-error);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: rgba(192, 21, 47, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-12);
+            }
+
+            .flex {
+                flex-direction: column;
+                gap: var(--space-12);
+            }
+
+            .flex-col {
+                width: 100%;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: var(--space-8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏗️ Steel Hours Planner</h1>
+        <p class="subtitle">Resource Allocation & Project Planning Tool</p>
+    </header>
+
+    <div class="container">
+        <!-- Project Input Section -->
+        <div class="section">
+            <h2>Add Project</h2>
+            <div class="flex">
+                <div class="flex-col">
+                    <label>Project ID</label>
+                    <input type="text" id="projectId" placeholder="e.g., 1">
+                </div>
+                <div class="flex-col">
+                    <label>Deadline</label>
+                    <input type="date" id="projectDeadline">
+                </div>
+                <div class="flex-col">
+                    <label>Est. Checking Hrs</label>
+                    <input type="number" id="estCheckingHrs" min="0" placeholder="e.g., 20">
+                </div>
+            </div>
+            <div class="flex">
+                <div class="flex-col">
+                    <label>Est. Editing Hrs</label>
+                    <input type="number" id="estEditingHrs" min="0" placeholder="e.g., 12">
+                </div>
+                <div class="flex-col">
+                    <label>Burnt Checking Hrs</label>
+                    <input type="number" id="burntCheckingHrs" min="0" placeholder="e.g., 2">
+                </div>
+                <div class="flex-col">
+                    <label>Burnt Editing Hrs</label>
+                    <input type="number" id="burntEditingHrs" min="0" placeholder="e.g., 0">
+                </div>
+            </div>
+            <button class="btn btn--primary" onclick="addProject()">+ Add Project</button>
+        </div>
+
+        <!-- Staff Availability -->
+        <div class="section">
+            <h2>Team Availability</h2>
+            <div class="flex">
+                <div class="flex-col">
+                    <label>Date</label>
+                    <input type="date" id="availDate">
+                </div>
+                <div class="flex-col">
+                    <label>Available Editors</label>
+                    <input type="number" id="availEditors" min="0" placeholder="e.g., 2">
+                </div>
+                <div class="flex-col">
+                    <label>Available Checkers</label>
+                    <input type="number" id="availCheckers" min="0" placeholder="e.g., 1">
+                </div>
+            </div>
+            <button class="btn btn--primary" onclick="addAvailability()">+ Add Availability</button>
+        </div>
+
+        <!-- Projects Summary -->
+        <div class="section">
+            <h2>Projects Summary</h2>
+            <div id="projectsContainer" class="empty-state">
+                <p>No projects added yet. Add a project to get started.</p>
+            </div>
+        </div>
+
+        <!-- Availability Summary -->
+        <div class="section">
+            <h2>Team Schedule</h2>
+            <div id="availabilityContainer" class="empty-state">
+                <p>No availability added yet. Add team availability to get started.</p>
+            </div>
+        </div>
+
+        <!-- Allocation Results -->
+        <div class="section">
+            <h2>Resource Allocation Results</h2>
+            <button class="btn btn--primary" onclick="runAllocation()">🔄 Calculate Allocation</button>
+            <div id="resultsContainer" class="empty-state" style="margin-top: var(--space-16);">
+                <p>Run allocation to see results.</p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="section" style="text-align: center;">
+            <button class="btn btn--secondary" onclick="exportResults()">📥 Export Results</button>
+            <button class="btn btn--danger" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let projects = [];
+        let availability = [];
+        let allocations = [];
+
+        const HOURS_PER_PERSON = 8;
+        const OT_LIMIT = 2;
+        const MIN_ALLOCATION = 4;
+
+        // Add project
+        function addProject() {
+            const projectId = document.getElementById('projectId').value;
+            const deadline = document.getElementById('projectDeadline').value;
+            const estCheckingHrs = parseFloat(document.getElementById('estCheckingHrs').value) || 0;
+            const estEditingHrs = parseFloat(document.getElementById('estEditingHrs').value) || 0;
+            const burntCheckingHrs = parseFloat(document.getElementById('burntCheckingHrs').value) || 0;
+            const burntEditingHrs = parseFloat(document.getElementById('burntEditingHrs').value) || 0;
+
+            if (!projectId || !deadline || estCheckingHrs === 0 && estEditingHrs === 0) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            projects.push({
+                projectId,
+                deadline,
+                estCheckingHrs,
+                estEditingHrs,
+                burntCheckingHrs,
+                burntEditingHrs
+            });
+
+            document.getElementById('projectId').value = '';
+            document.getElementById('projectDeadline').value = '';
+            document.getElementById('estCheckingHrs').value = '';
+            document.getElementById('estEditingHrs').value = '';
+            document.getElementById('burntCheckingHrs').value = '';
+            document.getElementById('burntEditingHrs').value = '';
+
+            renderProjects();
+        }
+
+        // Add availability
+        function addAvailability() {
+            const date = document.getElementById('availDate').value;
+            const editors = parseFloat(document.getElementById('availEditors').value) || 0;
+            const checkers = parseFloat(document.getElementById('availCheckers').value) || 0;
+
+            if (!date) {
+                alert('Please select a date.');
+                return;
+            }
+
+            availability.push({ date, editors, checkers });
+            availability.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            document.getElementById('availDate').value = '';
+            document.getElementById('availEditors').value = '';
+            document.getElementById('availCheckers').value = '';
+
+            renderAvailability();
+        }
+
+        // Render projects
+        function renderProjects() {
+            const container = document.getElementById('projectsContainer');
+            if (projects.length === 0) {
+                container.innerHTML = '<p>No projects added yet. Add a project to get started.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Project ID</th><th>Deadline</th><th>Est. Checking</th><th>Est. Editing</th><th>Burnt Checking</th><th>Burnt Editing</th><th>Action</th></tr></thead><tbody>';
+            projects.forEach((p, i) => {
+                html += `<tr>
+                    <td>${p.projectId}</td>
+                    <td>${new Date(p.deadline).toLocaleDateString()}</td>
+                    <td>${p.estCheckingHrs} hrs</td>
+                    <td>${p.estEditingHrs} hrs</td>
+                    <td>${p.burntCheckingHrs} hrs</td>
+                    <td>${p.burntEditingHrs} hrs</td>
+                    <td><button class="remove-btn" onclick="removeProject(${i})">Remove</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Render availability
+        function renderAvailability() {
+            const container = document.getElementById('availabilityContainer');
+            if (availability.length === 0) {
+                container.innerHTML = '<p>No availability added yet.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Date</th><th>Editors</th><th>Checkers</th><th>Action</th></tr></thead><tbody>';
+            availability.forEach((a, i) => {
+                html += `<tr>
+                    <td>${new Date(a.date).toLocaleDateString()}</td>
+                    <td>${a.editors}</td>
+                    <td>${a.checkers}</td>
+                    <td><button class="remove-btn" onclick="removeAvailability(${i})">Remove</button></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Remove project
+        function removeProject(index) {
+            projects.splice(index, 1);
+            renderProjects();
+        }
+
+        // Remove availability
+        function removeAvailability(index) {
+            availability.splice(index, 1);
+            renderAvailability();
+        }
+
+        // Run allocation algorithm
+        function runAllocation() {
+            if (projects.length === 0) {
+                alert('Please add at least one project.');
+                return;
+            }
+
+            if (availability.length === 0) {
+                alert('Please add team availability data.');
+                return;
+            }
+
+            // Re-render projects and availability before running allocation
+            renderProjects();
+            renderAvailability();
+
+            allocations = [];
+
+            projects.forEach(project => {
+                const deadline = new Date(project.deadline);
+                const firstAvailDate = new Date(availability[0].date);
+                let remainingCheckingHrs = project.estCheckingHrs - project.burntCheckingHrs;
+                let remainingEditingHrs = project.estEditingHrs - project.burntEditingHrs;
+
+                for (let date = new Date(firstAvailDate); date < deadline; date.setDate(date.getDate() + 1)) {
+                    if (remainingCheckingHrs <= 0 && remainingEditingHrs <= 0) break;
+
+                    const dateStr = date.toISOString().split('T')[0];
+                    const avail = availability.find(a => a.date === dateStr);
+
+                    if (!avail) continue;
+
+                    let allocCheckingHrs = Math.min(avail.checkers * HOURS_PER_PERSON, remainingCheckingHrs);
+                    let allocEditingHrs = Math.min(avail.editors * HOURS_PER_PERSON, remainingEditingHrs);
+
+                    let note = 'Normal Allocation';
+
+                    // Round to nearest 4
+                    allocCheckingHrs = Math.round(allocCheckingHrs / MIN_ALLOCATION) * MIN_ALLOCATION;
+                    allocEditingHrs = Math.round(allocEditingHrs / MIN_ALLOCATION) * MIN_ALLOCATION;
+
+                    if (allocCheckingHrs < remainingCheckingHrs || allocEditingHrs < remainingEditingHrs) {
+                        allocCheckingHrs += Math.min(OT_LIMIT * avail.checkers, remainingCheckingHrs - allocCheckingHrs);
+                        allocEditingHrs += Math.min(OT_LIMIT * avail.editors, remainingEditingHrs - allocEditingHrs);
+                        note = 'OT';
+                    }
+
+                    remainingCheckingHrs -= allocCheckingHrs;
+                    remainingEditingHrs -= allocEditingHrs;
+
+                    allocations.push({
+                        projectId: project.projectId,
+                        date: dateStr,
+                        allocCheckingHrs: Math.max(0, allocCheckingHrs),
+                        allocEditingHrs: Math.max(0, allocEditingHrs),
+                        remainingCheckingHrs: Math.max(0, remainingCheckingHrs),
+                        remainingEditingHrs: Math.max(0, remainingEditingHrs),
+                        note
+                    });
+                }
+            });
+
+            renderResults();
+        }
+
+        // Render results
+        function renderResults() {
+            const container = document.getElementById('resultsContainer');
+            if (allocations.length === 0) {
+                container.innerHTML = '<p>No allocations generated.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Project ID</th><th>Date</th><th>Alloc. Checking</th><th>Alloc. Editing</th><th>Remaining Checking</th><th>Remaining Editing</th><th>Status</th></tr></thead><tbody>';
+            allocations.forEach(a => {
+                const statusClass = a.note === 'OT' ? 'status--ot' : 'status--normal';
+                html += `<tr class="${a.remainingCheckingHrs > 0 || a.remainingEditingHrs > 0 ? 'row-group' : ''}">
+                    <td>${a.projectId}</td>
+                    <td>${new Date(a.date).toLocaleDateString()}</td>
+                    <td>${a.allocCheckingHrs} hrs</td>
+                    <td>${a.allocEditingHrs} hrs</td>
+                    <td>${a.remainingCheckingHrs} hrs</td>
+                    <td>${a.remainingEditingHrs} hrs</td>
+                    <td><span class="status ${statusClass}">${a.note}</span></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Export results
+        function exportResults() {
+            if (allocations.length === 0) {
+                alert('Run allocation first.');
+                return;
+            }
+
+            let csv = 'Project ID,Date,Alloc. Checking Hrs,Alloc. Editing Hrs,Remaining Checking Hrs,Remaining Editing Hrs,Status\n';
+            allocations.forEach(a => {
+                csv += `${a.projectId},${a.date},${a.allocCheckingHrs},${a.allocEditingHrs},${a.remainingCheckingHrs},${a.remainingEditingHrs},${a.note}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'allocation_results.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Clear all
+        function clearAll() {
+            if (confirm('Are you sure? This will clear all data.')) {
+                projects = [];
+                availability = [];
+                allocations = [];
+                renderProjects();
+                renderAvailability();
+                document.getElementById('resultsContainer').innerHTML = '<p>Run allocation to see results.</p>';
+            }
+        }
+
+        // Initialize with sample data
+        function initializeSampleData() {
+            // Add sample project
+            projects.push({
+                projectId: '1',
+                deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                estCheckingHrs: 20,
+                estEditingHrs: 12,
+                burntCheckingHrs: 2,
+                burntEditingHrs: 0
+            });
+
+            // Add sample availability for next 5 days
+            const baseDate = new Date();
+            for (let i = 0; i < 5; i++) {
+                const date = new Date(baseDate);
+                date.setDate(date.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                availability.push({
+                    date: dateStr,
+                    editors: i % 2 === 0 ? 2 : 1,
+                    checkers: i % 2 === 0 ? 1 : 2
+                });
+            }
+
+            renderProjects();
+            renderAvailability();
+        }
+
+        // Set today's date by default
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('projectDeadline').value = today;
+        document.getElementById('availDate').value = today;
+
+        // Initialize with sample data - delay to ensure DOM is ready
+        setTimeout(() => {
+            initializeSampleData();
+        }, 100);
+    </script>
+</body>
+</html>
